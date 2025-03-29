@@ -4,17 +4,17 @@
 #define PROPS_SPINNING_LIGHTSABER_H
 
 #include "prop_base.h"
-#include "sound/hybrid_font.h"
-#include "motion/motion_util.h"
+#include "../sound/hybrid_font.h"
+#include "../motion/motion_util.h"
 
-#undef PROP_TYPE
-#define PROP_TYPE SpinningLightsaberProp
+//#undef PROP_TYPE
+#define PROP_TYPE Spinning
 
-class SpinningLightsaberProp : public PROP_INHERIT_PREFIX PropBase {
+class Spinning : public PROP_INHERIT_PREFIX PropBase {
 public:
-  SpinningLightsaberProp() : PropBase() {}
+  Spinning() : PropBase() {}
   
-  const char* name() override { return "SpinningLightsaber"; }
+  const char* name() override { return "Spinning"; }
 
   // State tracking
   bool is_on_ = false;
@@ -26,24 +26,26 @@ public:
   SpinState spin_state_ = STOPPED;
   
   // Pin definitions
-  static const int LED_STRIP_1_PIN = bladePowerPin;     // LED1 pin for LED strip 1
+  static const int LED_STRIP_1_PIN = bladePowerPin1;     // LED1 pin for LED strip 1
   static const int LED_STRIP_2_PIN = bladePowerPin2;    // LED2 pin for LED strip 2
   static const int RETRACTION_MOTOR_1_PIN = bladePowerPin3; // LED3 pin for retraction motor 1
   static const int RETRACTION_MOTOR_2_PIN = bladePowerPin4; // LED4 pin for retraction motor 2
   static const int CANE_ROTATION_MOTOR_PIN = bladePowerPin5; // LED5 pin for cane rotation motor
   
   static const int SERVO_PIN = blade5Pin;  // Using Free 1 pin for servo control
-  static const int SERVO_LEFT_POS = 2000;  // Servo value for left position
+  static const int SERVO_LEFT_POS = 15000;  // Servo value for left position
   static const int SERVO_RIGHT_POS = 30000; // Servo value for right position
   
   // Thresholds for spin detection
-  const float SPIN_THRESHOLD = 200.0f;  // Angular velocity threshold for activation (deg/s)
+  const float SPIN_THRESHOLD = 500.0f;  // Angular velocity threshold for activation (deg/s)
   const float SLOW_THRESHOLD = 100.0f;  // Angular velocity threshold for slow spin (deg/s)
-  const float STOP_THRESHOLD = 30.0f;   // Angular velocity threshold for stopping (deg/s)
+  const float STOP_THRESHOLD = 10.0f;   // Angular velocity threshold for stopping (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t servo_return_time_ = 0;
   uint32_t sound_deactivation_time_ = 0;
+  uint32_t activation_buffer_ = 0;
+  uint32_t last_check_time_ = 0;
 
   void Setup() override {
     PropBase::Setup();
@@ -67,15 +69,10 @@ public:
     LSanalogWrite(SERVO_PIN, SERVO_LEFT_POS); // Start in left (retracted) position
   }
 
-  // Function to check if the saber is currently activated
-  bool IsOn() override {
-    return is_on_;
-  }
-
   // Main loop function that gets called by ProffieOS
   void Loop() override {
     PropBase::Loop();
-    
+
     // Get gyroscope data from IMU to detect rotation
     float rotation_speed = GetRotationSpeed();
     
@@ -87,17 +84,20 @@ public:
 
     // Check for deactivation sound
     if (sound_deactivation_time_ > 0 && millis() > sound_deactivation_time_) {
-    hybrid_font.PlayCommon(&SFX_poweroff); // Play deactivation sound
+    SaberBase::TurnOff(SaberBase::OFF_NORMAL); // Play deactivation sound
       sound_deactivation_time_ = 0; // Reset timer
     }
     
+        if (millis() - last_check_time_ >= 500) { 
+	last_check_time_ = millis();
     // State machine for saber control
     switch (spin_state_) {
       case STOPPED:
-        if (rotation_speed > SPIN_THRESHOLD && !is_on_) {
+        if (rotation_speed > SPIN_THRESHOLD && !is_on_ && millis() > activation_buffer_) {
           // Hilt is spinning fast enough - activate lightsaber
           ActivateSaber();
           spin_state_ = SPINNING;
+	  activation_buffer_ = millis() + 8000;
         }
         break;
         
@@ -110,13 +110,19 @@ public:
         break;
         
       case SLOWING:
-        if (rotation_speed < STOP_THRESHOLD) {
+        if (rotation_speed < STOP_THRESHOLD && is_on_) {
           // Spinning has stopped - turn off saber
           DeactivateSaber();
           spin_state_ = STOPPED;
         }
         break;
     }
+   }
+  }
+
+  // Function to check if the saber is currently activated
+  bool IsOn() override {
+    return is_on_;
   }
 
   // Helper function to get rotation speed from the IMU
@@ -131,11 +137,12 @@ public:
   // Activate the lightsaber
   void ActivateSaber() {
     if (is_on_) return;
+
     is_on_ = true;
     
     // Play activation sound
-    hybrid_font.PlayCommon(&SFX_boot);
-    
+    SaberBase::TurnOn();
+
     // Turn on LED strips (simple on/off, no PWM)
     digitalWrite(LED_STRIP_1_PIN, HIGH);
     digitalWrite(LED_STRIP_2_PIN, HIGH);
@@ -168,6 +175,7 @@ public:
   // Deactivate the lightsaber
   void DeactivateSaber() {
     if (!is_on_) return;
+
     is_on_ = false;
     
     // Turn off LED strips
