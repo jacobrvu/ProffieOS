@@ -87,9 +87,10 @@ public:
     SaberBase::TurnOff(SaberBase::OFF_NORMAL); // Play deactivation sound
       sound_deactivation_time_ = 0; // Reset timer
     }
-    
-        if (millis() - last_check_time_ >= 500) { 
+
+    if (millis() - last_check_time_ >= 500) { 
 	last_check_time_ = millis();
+
     // State machine for saber control
     switch (spin_state_) {
       case STOPPED:
