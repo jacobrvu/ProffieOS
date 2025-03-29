@@ -1837,10 +1837,10 @@ public:
     return false;
   }
 
-  virtual bool mode_Event2(enum BUTTON button, EVENT event, uint32_t modifiers) {
-    return Event2(button, event, modifiers);
-  }
-  virtual bool Event2(enum BUTTON button, EVENT event, uint32_t modifiers) = 0;
+  //virtual bool mode_Event2(enum BUTTON button, EVENT event, uint32_t modifiers) {
+  //  return Event2(button, event, modifiers);
+  //}
+  //virtual bool Event2(enum BUTTON button, EVENT event, uint32_t modifiers) = 0;
 
   const char* GetStyle(int blade) {
     return current_preset_.GetStyle(blade);
