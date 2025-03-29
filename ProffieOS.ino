@@ -25,7 +25,7 @@
 |  Add the slashes to any that you are not using.                   |
 \*-----------------------------------------------------------------*/
 
-// #define CONFIG_FILE "config/YOUR_CONFIG_FILE_NAME_HERE.h"
+#define CONFIG_FILE "config/mysaber_config.h"
 
 // #define CONFIG_FILE "config/default_proffieboard_config.h"
 // #define CONFIG_FILE "config/proffieboard_v1_test_bench_config.h"
@@ -678,7 +678,7 @@ ArgParserInterface* CurrentArgParser;
 #undef CONFIG_PROP
 
 #ifndef PROP_TYPE
-#include "props/saber.h"
+#include "props/spinning_lightsaber.h"
 #endif
 
 PROP_TYPE prop;
