@@ -1,7 +1,7 @@
 #ifdef CONFIG_TOP
 #include "proffieboard_v3_config.h"
 #define NUM_BLADES 2
-#define NUM_BUTTONS 1
+#define NUM_BUTTONS 0
 #define VOLUME 2300
 const unsigned int maxLedsPerStrip = 144;
 #define CLASH_THRESHOLD_G 100.0
@@ -9,8 +9,8 @@ const unsigned int maxLedsPerStrip = 144;
 #define ENABLE_MOTION
 #define ENABLE_WS2811
 #define ENABLE_SD
-#define MOTION_TIMEOUT 60 * 15 * 1000  // 15 minutes before motion timeout
-#define IDLE_OFF_TIME 60 * 10 * 1000   // 10 minutes idle before powering down
+#define MOTION_TIMEOUT 60 * 100 * 1000  // 100 minutes before motion timeout
+#define IDLE_OFF_TIME 60 * 100 * 1000   // 100 minutes idle before powering down
 #endif
 
 #ifdef CONFIG_PROP
@@ -43,5 +43,5 @@ SimpleBladePtr<myLED, NoLED, NoLED, NoLED, bladePowerPin2, -1, -1, -1>(),
 #endif
 
 #ifdef CONFIG_BUTTONS
-Button PowerButton(BUTTON_POWER, powerButtonPin, "pow");
+//Button PowerButton(BUTTON_POWER, powerButtonPin, "pow");
 #endif
