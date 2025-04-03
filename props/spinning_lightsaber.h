@@ -7,7 +7,6 @@
 #include "../sound/hybrid_font.h"
 #include "../motion/motion_util.h"
 
-//#undef PROP_TYPE
 #define PROP_TYPE Spinning
 
 class Spinning : public PROP_INHERIT_PREFIX PropBase {
@@ -31,10 +30,7 @@ public:
   static const int RETRACTION_MOTOR_1_PIN = bladePowerPin3; // LED3 pin for retraction motor 1
   static const int RETRACTION_MOTOR_2_PIN = bladePowerPin4; // LED4 pin for retraction motor 2
   static const int CANE_ROTATION_MOTOR_PIN = bladePowerPin5; // LED5 pin for cane rotation motor
-  
-  static const int SERVO_PIN = blade5Pin;  // Using Free 1 pin for servo control
-  static const int SERVO_LEFT_POS = 15000;  // Servo value for left position
-  static const int SERVO_RIGHT_POS = 30000; // Servo value for right position
+  static const int CLUTCH_PIN = bladePowerPin6;  // LED6 pin for clutch control
   
   // Thresholds for spin detection
   const float SPIN_THRESHOLD = 500.0f;  // Angular velocity threshold for activation (deg/s)
@@ -42,7 +38,7 @@ public:
   const float STOP_THRESHOLD = 10.0f;   // Angular velocity threshold for stopping (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
-  uint32_t servo_return_time_ = 0;
+  uint32_t clutch_return_time_ = 0;
   uint32_t sound_deactivation_time_ = 0;
   uint32_t activation_buffer_ = 0;
   uint32_t last_check_time_ = 0;
@@ -56,17 +52,16 @@ public:
     pinMode(RETRACTION_MOTOR_1_PIN, OUTPUT);
     pinMode(RETRACTION_MOTOR_2_PIN, OUTPUT);
     pinMode(CANE_ROTATION_MOTOR_PIN, OUTPUT);
-    
+    pinMode(CLUTCH_PIN, OUTPUT);
+
     // Turn everything off initially
     digitalWrite(LED_STRIP_1_PIN, LOW);
     digitalWrite(LED_STRIP_2_PIN, LOW);
     digitalWrite(RETRACTION_MOTOR_1_PIN, LOW);
     digitalWrite(RETRACTION_MOTOR_2_PIN, LOW);
     digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
-    
-    // Initialize servo
-    LSanalogWriteSetup(SERVO_PIN, PWM_USECASE::SERVO);
-    LSanalogWrite(SERVO_PIN, SERVO_LEFT_POS); // Start in left (retracted) position
+    digitalWrite(CLUTCH_PIN, LOW);
+
   }
 
   // Main loop function that gets called by ProffieOS
@@ -77,9 +72,9 @@ public:
     float rotation_speed = GetRotationSpeed();
     
     // Check for servo return timing
-    if (millis() > servo_return_time_) {
-      LSanalogWrite(SERVO_PIN, SERVO_LEFT_POS); // Return to left position
-      servo_return_time_ = 0; // Reset timer
+    if (millis() > clutch_return_time_ && clutch_return_time_ > 0) {
+      digitalWrite(CLUTCH_PIN, LOW); // Return to left position
+      clutch_return_time_ = 0; // Reset timer
     }
 
     // Check for deactivation sound
@@ -148,11 +143,11 @@ public:
     digitalWrite(LED_STRIP_1_PIN, HIGH);
     digitalWrite(LED_STRIP_2_PIN, HIGH);
     
-    // Move servo right 5mm
-    LSanalogWrite(SERVO_PIN, SERVO_RIGHT_POS);
+    // Move clutch right 5mm
+    digitalWrite(CLUTCH_PIN, HIGH);
     
-    // Schedule servo to return after 500ms
-    servo_return_time_ = millis() + 500;
+    // Schedule clutch to return after 500ms
+    clutch_return_time_ = millis() + 500;
     
     // Turn on retraction motors with PWM at 20% power
     analogWrite(RETRACTION_MOTOR_1_PIN, 50);
@@ -189,7 +184,7 @@ public:
     digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
     
     // Ensure servo is in left position
-    LSanalogWrite(SERVO_PIN, SERVO_LEFT_POS);
+    digitalWrite(CLUTCH_PIN, LOW);
   }
   
 };
