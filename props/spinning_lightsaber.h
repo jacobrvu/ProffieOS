@@ -39,6 +39,7 @@ public:
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
+  uint32_t blade_tension_time_ = 0;
   uint32_t sound_deactivation_time_ = 0;
   uint32_t activation_buffer_ = 0;
   uint32_t last_check_time_ = 0;
@@ -75,6 +76,13 @@ public:
     if (millis() > clutch_return_time_ && clutch_return_time_ > 0) {
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
+      blade_tension_time_ = millis() + 200;
+    }
+    // Check for blade tensioning
+    if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
+      analogWrite(RETRACTION_MOTOR_1_PIN, 50);
+      analogWrite(RETRACTION_MOTOR_2_PIN, 50);
+      blade_tension_time_ = 0;
     }
 
     // Check for deactivation sound
@@ -148,10 +156,6 @@ public:
     
     // Schedule clutch to return after 500ms
     clutch_return_time_ = millis() + 500;
-    
-    // Turn on retraction motors with PWM at 20% power
-    analogWrite(RETRACTION_MOTOR_1_PIN, 50);
-    analogWrite(RETRACTION_MOTOR_2_PIN, 50);
   }
   
   // Begin retraction sequence when spinning slows
