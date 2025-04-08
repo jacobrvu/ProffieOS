@@ -155,7 +155,7 @@ public:
     digitalWrite(CLUTCH_PIN, HIGH);
     
     // Schedule clutch to return after 500ms
-    clutch_return_time_ = millis() + 500;
+    clutch_return_time_ = millis() + 700;
   }
   
   // Begin retraction sequence when spinning slows
