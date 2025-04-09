@@ -25,12 +25,12 @@ public:
   SpinState spin_state_ = STOPPED;
   
   // Pin definitions
-  static const int LED_STRIP_1_PIN = bladePowerPin5;     // LED1 pin for LED strip 1
-  static const int LED_STRIP_2_PIN = bladePowerPin6;    // LED2 pin for LED strip 2
-  static const int RETRACTION_MOTOR_1_PIN = bladePowerPin1; // LED3 pin for retraction motor 1
-  static const int RETRACTION_MOTOR_2_PIN = bladePowerPin2; // LED4 pin for retraction motor 2
-  static const int CANE_ROTATION_MOTOR_PIN = bladePowerPin4; // LED5 pin for cane rotation motor
-  static const int CLUTCH_PIN = bladePowerPin3;  // LED6 pin for clutch control
+  static const int LED_STRIP_1_PIN = bladePowerPin5;     // LED5 pin for LED strip 1
+  static const int LED_STRIP_2_PIN = bladePowerPin6;    // LED6 pin for LED strip 2
+  static const int RETRACTION_MOTOR_1_PIN = bladePowerPin1; // LED1 pin for retraction motor 1
+  static const int RETRACTION_MOTOR_2_PIN = bladePowerPin2; // LED2 pin for retraction motor 2
+  static const int CANE_ROTATION_MOTOR_PIN = bladePowerPin4; // LED4 pin for cane rotation motor
+  static const int CLUTCH_PIN = bladePowerPin3;  // LED3 pin for clutch control
   
   // Thresholds for spin detection
   const float SPIN_THRESHOLD = 500.0f;  // Angular velocity threshold for activation (deg/s)
