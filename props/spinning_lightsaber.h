@@ -43,6 +43,7 @@ public:
   uint32_t sound_deactivation_time_ = 0;
   uint32_t activation_buffer_ = 0;
   uint32_t last_check_time_ = 0;
+  uint32_t failsafe_off_ = 0;
 
   void Setup() override {
     PropBase::Setup();
@@ -89,6 +90,12 @@ public:
     if (sound_deactivation_time_ > 0 && millis() > sound_deactivation_time_) {
     SaberBase::TurnOff(SaberBase::OFF_NORMAL); // Play deactivation sound
       sound_deactivation_time_ = 0; // Reset timer
+    }
+
+    // Failsafe off
+    if (failsafe_off_ > 0 && millis() > failsafe_off_) {
+      DeactivateSaber(); // Turn everything off
+      failsafe_off_ = 0; // Reset timer
     }
 
     if (millis() - last_check_time_ >= 500) { 
@@ -163,7 +170,8 @@ public:
     
     // Schedule deactivation sound after 3000ms
     sound_deactivation_time_ = millis() + 3000;
-    
+    failsafe_off_ = millis() + 6000;
+	  
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     
