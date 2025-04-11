@@ -81,8 +81,8 @@ public:
     }
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      analogWrite(RETRACTION_MOTOR_1_PIN, 50);
-      analogWrite(RETRACTION_MOTOR_2_PIN, 50);
+      analogWrite(RETRACTION_MOTOR_1_PIN, 40);
+      analogWrite(RETRACTION_MOTOR_2_PIN, 40);
       blade_tension_time_ = 0;
     }
 
@@ -161,8 +161,8 @@ public:
     // Move clutch right 5mm
     digitalWrite(CLUTCH_PIN, HIGH);
     
-    // Schedule clutch to return after 500ms
-    clutch_return_time_ = millis() + 700;
+    // Schedule clutch to return after 600ms
+    clutch_return_time_ = millis() + 600;
   }
   
   // Begin retraction sequence when spinning slows
