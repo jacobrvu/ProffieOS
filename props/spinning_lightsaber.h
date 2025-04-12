@@ -59,8 +59,8 @@ public:
     // Turn everything off initially
     digitalWrite(LED_STRIP_1_PIN, LOW);
     digitalWrite(LED_STRIP_2_PIN, LOW);
-    digitalWrite(RETRACTION_MOTOR_1_PIN, LOW);
-    digitalWrite(RETRACTION_MOTOR_2_PIN, LOW);
+    analogWrite(RETRACTION_MOTOR_1_PIN, 0);
+    analogWrite(RETRACTION_MOTOR_2_PIN, 0);
     digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
     digitalWrite(CLUTCH_PIN, LOW);
 
@@ -81,8 +81,8 @@ public:
     }
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      analogWrite(RETRACTION_MOTOR_1_PIN, 40);
-      analogWrite(RETRACTION_MOTOR_2_PIN, 40);
+      analogWrite(RETRACTION_MOTOR_1_PIN, 50);
+      analogWrite(RETRACTION_MOTOR_2_PIN, 50);
       blade_tension_time_ = 0;
     }
 
@@ -191,8 +191,8 @@ public:
     digitalWrite(LED_STRIP_2_PIN, LOW);
     
     // Turn off all motors
-    digitalWrite(RETRACTION_MOTOR_1_PIN, LOW);
-    digitalWrite(RETRACTION_MOTOR_2_PIN, LOW);
+    analogWrite(RETRACTION_MOTOR_1_PIN, 0);
+    analogWrite(RETRACTION_MOTOR_2_PIN, 0);
     digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
     
     // Ensure servo is in left position
