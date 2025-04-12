@@ -35,8 +35,8 @@ struct myLED {
 };
 
 BladeConfig blades[] = {
- { 0, SimpleBladePtr<myLED, NoLED, NoLED, NoLED, bladePowerPin1, -1, -1, -1>(), 
-SimpleBladePtr<myLED, NoLED, NoLED, NoLED, bladePowerPin2, -1, -1, -1>(),
+ { 0, SimpleBladePtr<myLED, NoLED, NoLED, NoLED, bladePowerPin5, -1, -1, -1>(), 
+SimpleBladePtr<myLED, NoLED, NoLED, NoLED, bladePowerPin6, -1, -1, -1>(),
  CONFIGARRAY(presets)}
 };
 
