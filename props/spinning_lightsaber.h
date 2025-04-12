@@ -79,6 +79,7 @@ public:
       clutch_return_time_ = 0; // Reset timer
       blade_tension_time_ = millis() + 200;
     }
+	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
       analogWrite(RETRACTION_MOTOR_1_PIN, 50);
@@ -94,7 +95,17 @@ public:
 
     // Failsafe off
     if (failsafe_off_ > 0 && millis() > failsafe_off_) {
-      DeactivateSaber(); // Turn everything off
+      // Turn off LED strips
+      digitalWrite(LED_STRIP_1_PIN, LOW);
+      digitalWrite(LED_STRIP_2_PIN, LOW);
+    
+      // Turn off all motors
+      analogWrite(RETRACTION_MOTOR_1_PIN, 0);
+      analogWrite(RETRACTION_MOTOR_2_PIN, 0);
+      digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
+    
+      // Ensure clutch is in left position
+      digitalWrite(CLUTCH_PIN, LOW);
       failsafe_off_ = 0; // Reset timer
     }
 
@@ -121,7 +132,7 @@ public:
         break;
         
       case SLOWING:
-        if (rotation_speed < STOP_THRESHOLD && is_on_) {
+        if (rotation_speed < STOP_THRESHOLD) {
           // Spinning has stopped - turn off saber
           DeactivateSaber();
           spin_state_ = STOPPED;
@@ -162,7 +173,7 @@ public:
     digitalWrite(CLUTCH_PIN, HIGH);
     
     // Schedule clutch to return after 600ms
-    clutch_return_time_ = millis() + 600;
+    clutch_return_time_ = millis() + 700;
   }
   
   // Begin retraction sequence when spinning slows
