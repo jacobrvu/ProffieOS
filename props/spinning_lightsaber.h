@@ -33,9 +33,9 @@ public:
   static const int CLUTCH_PIN = bladePowerPin3;  // LED3 pin for clutch control
   
   // Thresholds for spin detection
-  const float SPIN_THRESHOLD = 720.0f;  // Angular velocity threshold for activation (deg/s)
+  const float SPIN_THRESHOLD = 1080.0f;  // Angular velocity threshold for activation (deg/s)
   const float SLOW_THRESHOLD = 360.0f;  // Angular velocity threshold for slow spin (deg/s)
-  const float STOP_THRESHOLD = 100.0f;   // Angular velocity threshold for stopping (deg/s)
+  const float STOP_THRESHOLD = 180.0f;   // Angular velocity threshold for stopping (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
