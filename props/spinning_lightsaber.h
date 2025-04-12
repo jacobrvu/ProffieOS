@@ -113,7 +113,7 @@ public:
         break;
         
       case SPINNING:
-        if (rotation_speed < SLOW_THRESHOLD && rotation_speed > STOP_THRESHOLD) {
+        if (rotation_speed < SLOW_THRESHOLD) {
           // Spinning is slowing - start retraction
           BeginRetraction();
           spin_state_ = SLOWING;
