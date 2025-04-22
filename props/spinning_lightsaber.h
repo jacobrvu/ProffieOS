@@ -39,6 +39,7 @@ public:
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
+  uint32_t blade_tighten_time_ = 0;
   uint32_t blade_tension_time_ = 0;
   uint32_t sound_deactivation_time_ = 0;
   uint32_t activation_buffer_ = 0;
@@ -79,7 +80,15 @@ public:
     if (millis() > clutch_return_time_ && clutch_return_time_ > 0) {
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
-      blade_tension_time_ = millis() + 200;
+      blade_tighten_time_ = millis() + 200;
+    }
+	  
+    // Check for blade tightening
+    if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 20000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 20000);
+      blade_tighten_time_ = 0;
+      blade_tension_time_ = millis() + 300;
     }
 	  
     // Check for blade tensioning
@@ -88,7 +97,7 @@ public:
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2000);
       blade_tension_time_ = 0;
     }
-
+	  
     // Check for deactivation sound
     if (sound_deactivation_time_ > 0 && millis() > sound_deactivation_time_) {
     SaberBase::TurnOff(SaberBase::OFF_NORMAL); // Play deactivation sound
