@@ -34,8 +34,8 @@ public:
   
   // Thresholds for spin detection
   const float SPIN_THRESHOLD = 1080.0f;  // Angular velocity threshold for activation (deg/s)
-  const float SLOW_THRESHOLD = 360.0f;  // Angular velocity threshold for slow spin (deg/s)
-  const float STOP_THRESHOLD = 180.0f;   // Angular velocity threshold for stopping (deg/s)
+  const float SLOW_THRESHOLD = 720.0f;  // Angular velocity threshold for slow spin (deg/s)
+  const float STOP_THRESHOLD = 360.0f;   // Angular velocity threshold for stopping (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
@@ -59,6 +59,8 @@ public:
     // Turn everything off initially
     digitalWrite(LED_STRIP_1_PIN, LOW);
     digitalWrite(LED_STRIP_2_PIN, LOW);
+    LSanalogWriteSetup(RETRACTION_MOTOR_1_PIN);
+    LSanalogWriteSetup(RETRACTION_MOTOR_2_PIN);
     analogWrite(RETRACTION_MOTOR_1_PIN, 0);
     analogWrite(RETRACTION_MOTOR_2_PIN, 0);
     digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
@@ -82,8 +84,8 @@ public:
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      analogWrite(RETRACTION_MOTOR_1_PIN, 50);
-      analogWrite(RETRACTION_MOTOR_2_PIN, 50);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2000);
       blade_tension_time_ = 0;
     }
 
@@ -95,13 +97,15 @@ public:
 
     // Failsafe off
     if (failsafe_off_ > 0 && millis() > failsafe_off_) {
-      // Turn off LED strips
+      DeactivateSaber();
+      SaberBase::TurnOff(SaberBase::OFF_NORMAL);
+
       digitalWrite(LED_STRIP_1_PIN, LOW);
       digitalWrite(LED_STRIP_2_PIN, LOW);
     
       // Turn off all motors
-      analogWrite(RETRACTION_MOTOR_1_PIN, 0);
-      analogWrite(RETRACTION_MOTOR_2_PIN, 0);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 0);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 0);
       digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
     
       // Ensure clutch is in left position
@@ -172,7 +176,7 @@ public:
     // Move clutch right 5mm
     digitalWrite(CLUTCH_PIN, HIGH);
     
-    // Schedule clutch to return after 600ms
+    // Schedule clutch to return after 700ms
     clutch_return_time_ = millis() + 700;
   }
   
@@ -181,14 +185,14 @@ public:
     
     // Schedule deactivation sound after 3000ms
     sound_deactivation_time_ = millis() + 3000;
-    failsafe_off_ = millis() + 6000;
+    failsafe_off_ = millis() + 5000;
 	  
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     
     // Turn on both retraction motors at full power
-    analogWrite(RETRACTION_MOTOR_1_PIN, 255);
-    analogWrite(RETRACTION_MOTOR_2_PIN, 255);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 25000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 25000);
   }
   
   // Deactivate the lightsaber
@@ -202,8 +206,8 @@ public:
     digitalWrite(LED_STRIP_2_PIN, LOW);
     
     // Turn off all motors
-    analogWrite(RETRACTION_MOTOR_1_PIN, 0);
-    analogWrite(RETRACTION_MOTOR_2_PIN, 0);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 0);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 0);
     digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
     
     // Ensure servo is in left position
