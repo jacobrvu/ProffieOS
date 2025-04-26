@@ -32,14 +32,13 @@ public:
   static const int CLUTCH_PIN = bladePowerPin3;  // LED3 pin for clutch control
   
   // Thresholds for spin detection
-  const float SPIN_THRESHOLD = 1440.0f;  // Angular velocity threshold for activation (deg/s)
-  const float SLOW_THRESHOLD = 720.0f;  // Angular velocity threshold for slow spin (deg/s)
+  const float SPIN_THRESHOLD = 720.0f;  // Angular velocity threshold for activation (deg/s)
+  const float SLOW_THRESHOLD = 600.0f;  // Angular velocity threshold for slow spin (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
   uint32_t blade_tighten_time_ = 0;
   uint32_t blade_tension_time_ = 0;
-  uint32_t sound_deactivation_time_ = 0;
   uint32_t activation_buffer_ = 0;
   uint32_t last_check_time_ = 0;
   uint32_t failsafe_off_ = 0;
@@ -153,7 +152,7 @@ public:
           // Spinning is slowing - start retraction
           BeginRetraction();
           spin_state_ = STOPPED;
-	  activation_buffer_ = millis() + 5000;
+	  activation_buffer_ = millis() + 6000;
         }
         break;
         
@@ -181,7 +180,7 @@ public:
 
     is_on_ = true;
 
-    ignite_timer_ = millis() + 1000;
+    ignite_timer_ = millis() + 1700;
   }
   
   // Begin retraction sequence when spinning slows
@@ -194,8 +193,8 @@ public:
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 24000);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 25000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 21000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 22000);
   }
   
   // Deactivate the lightsaber
