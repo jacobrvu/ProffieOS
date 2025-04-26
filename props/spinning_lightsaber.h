@@ -19,8 +19,7 @@ public:
   bool is_on_ = false;
   enum SpinState {
     STOPPED,
-    SPINNING,
-    SLOWING
+    SPINNING
   };
   SpinState spin_state_ = STOPPED;
   
@@ -33,9 +32,8 @@ public:
   static const int CLUTCH_PIN = bladePowerPin3;  // LED3 pin for clutch control
   
   // Thresholds for spin detection
-  const float SPIN_THRESHOLD = 720.0f;  // Angular velocity threshold for activation (deg/s)
-  const float SLOW_THRESHOLD = 1080.0f;  // Angular velocity threshold for slow spin (deg/s)
-  const float STOP_THRESHOLD = 500.0f;   // Angular velocity threshold for stopping (deg/s)
+  const float SPIN_THRESHOLD = 1440.0f;  // Angular velocity threshold for activation (deg/s)
+  const float SLOW_THRESHOLD = 720.0f;  // Angular velocity threshold for slow spin (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
@@ -110,15 +108,9 @@ public:
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 3000);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 3200);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 4000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 4300);
       blade_tension_time_ = 0;
-    }
-	  
-    // Check for deactivation sound
-    if (sound_deactivation_time_ > 0 && millis() > sound_deactivation_time_) {
-    SaberBase::TurnOff(SaberBase::OFF_NORMAL); // Play deactivation sound
-      sound_deactivation_time_ = 0; // Reset timer
     }
 
     // Failsafe off
@@ -139,7 +131,7 @@ public:
       failsafe_off_ = 0; // Reset timer
     }
 
-    if (millis() - last_check_time_ >= 500) { 
+    if (millis() - last_check_time_ >= 300) { 
 	last_check_time_ = millis();
 
     // State machine for saber control
@@ -150,7 +142,7 @@ public:
           ActivateSaber();
           spin_state_ = SPINNING;
 	  activation_buffer_ = millis() + 8000;
-	  spin_speed_buffer_ = millis() + 5000;
+	  spin_speed_buffer_ = millis() + 6000;
         }
         break;
         
@@ -158,17 +150,11 @@ public:
         if (rotation_speed < SLOW_THRESHOLD && millis() > spin_speed_buffer_) {
           // Spinning is slowing - start retraction
           BeginRetraction();
-          spin_state_ = SLOWING;
+          spin_state_ = STOPPED;
+	  activation_buffer_ = millis() + 5000;
         }
         break;
         
-      case SLOWING:
-        if (rotation_speed < STOP_THRESHOLD) {
-          // Spinning has stopped - turn off saber
-          DeactivateSaber();
-          spin_state_ = STOPPED;
-        }
-        break;
     }
    }
   }
@@ -199,16 +185,15 @@ public:
   // Begin retraction sequence when spinning slows
   void BeginRetraction() {
     
-    // Schedule deactivation sound after 3000ms
-    sound_deactivation_time_ = millis() + 3000;
-    failsafe_off_ = millis() + 5000;
+    // failsafe off timing
+    failsafe_off_ = millis() + 4000;
 	  
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 28000);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 29000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 24000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 25000);
   }
   
   // Deactivate the lightsaber
