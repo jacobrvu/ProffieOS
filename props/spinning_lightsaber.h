@@ -33,9 +33,9 @@ public:
   static const int CLUTCH_PIN = bladePowerPin3;  // LED3 pin for clutch control
   
   // Thresholds for spin detection
-  const float SPIN_THRESHOLD = 1080.0f;  // Angular velocity threshold for activation (deg/s)
-  const float SLOW_THRESHOLD = 720.0f;  // Angular velocity threshold for slow spin (deg/s)
-  const float STOP_THRESHOLD = 360.0f;   // Angular velocity threshold for stopping (deg/s)
+  const float SPIN_THRESHOLD = 720.0f;  // Angular velocity threshold for activation (deg/s)
+  const float SLOW_THRESHOLD = 1080.0f;  // Angular velocity threshold for slow spin (deg/s)
+  const float STOP_THRESHOLD = 500.0f;   // Angular velocity threshold for stopping (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
@@ -45,6 +45,7 @@ public:
   uint32_t activation_buffer_ = 0;
   uint32_t last_check_time_ = 0;
   uint32_t failsafe_off_ = 0;
+  uint32_t spin_speed_buffer_ = 0;
 
   void Setup() override {
     PropBase::Setup();
@@ -85,8 +86,8 @@ public:
 	  
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 18000);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 18000);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 8000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 8000);
       blade_tighten_time_ = 0;
       blade_tension_time_ = millis() + 300;
     }
@@ -133,11 +134,12 @@ public:
           ActivateSaber();
           spin_state_ = SPINNING;
 	  activation_buffer_ = millis() + 8000;
+	  spin_speed_buffer_ = millis() + 3000;
         }
         break;
         
       case SPINNING:
-        if (rotation_speed < SLOW_THRESHOLD) {
+        if (rotation_speed < SLOW_THRESHOLD && millis() > spin_speed_buffer_) {
           // Spinning is slowing - start retraction
           BeginRetraction();
           spin_state_ = SLOWING;
@@ -185,8 +187,8 @@ public:
     // Move clutch right 5mm
     digitalWrite(CLUTCH_PIN, HIGH);
     
-    // Schedule clutch to return after 700ms
-    clutch_return_time_ = millis() + 700;
+    // Schedule clutch to return after 800ms
+    clutch_return_time_ = millis() + 800;
   }
   
   // Begin retraction sequence when spinning slows
