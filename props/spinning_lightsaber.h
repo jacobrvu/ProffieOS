@@ -86,7 +86,7 @@ public:
 	  
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 8000);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 7500);
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 8000);
       blade_tighten_time_ = 0;
       blade_tension_time_ = millis() + 300;
@@ -94,7 +94,7 @@ public:
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 3000);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2500);
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 3000);
       blade_tension_time_ = 0;
     }
@@ -203,7 +203,7 @@ public:
     
     // Turn on both retraction motors at full power
     LSanalogWrite(RETRACTION_MOTOR_1_PIN, 28000);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 28000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 29000);
   }
   
   // Deactivate the lightsaber
