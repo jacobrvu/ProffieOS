@@ -46,6 +46,7 @@ public:
   uint32_t last_check_time_ = 0;
   uint32_t failsafe_off_ = 0;
   uint32_t spin_speed_buffer_ = 0;
+  uint32_t ignite_timer_ = 0;
 
   void Setup() override {
     PropBase::Setup();
@@ -76,26 +77,41 @@ public:
 
     // Get gyroscope data from IMU to detect rotation
     float rotation_speed = GetRotationSpeed();
+
+    if (millis() > ignite_timer_ && ignite_timer_ > 0) {
+      ignite_timer_ = 0;
+      SaberBase::TurnOn();
+
+    // Turn on LED strips (simple on/off, no PWM)
+      digitalWrite(LED_STRIP_1_PIN, HIGH);
+      digitalWrite(LED_STRIP_2_PIN, HIGH);
     
+    // Move clutch right 5mm
+      digitalWrite(CLUTCH_PIN, HIGH);
+    
+    // Schedule clutch to return after 700ms
+      clutch_return_time_ = millis() + 700;
+    }
+  
     // Check for servo return timing
     if (millis() > clutch_return_time_ && clutch_return_time_ > 0) {
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
       blade_tighten_time_ = millis() + 300;
     }
-	  
+
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
       LSanalogWrite(RETRACTION_MOTOR_1_PIN, 7500);
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 8000);
       blade_tighten_time_ = 0;
-      blade_tension_time_ = millis() + 300;
+      blade_tension_time_ = millis() + 200;
     }
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2500);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 3000);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 3000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 3200);
       blade_tension_time_ = 0;
     }
 	  
@@ -134,7 +150,7 @@ public:
           ActivateSaber();
           spin_state_ = SPINNING;
 	  activation_buffer_ = millis() + 8000;
-	  spin_speed_buffer_ = millis() + 3000;
+	  spin_speed_buffer_ = millis() + 5000;
         }
         break;
         
@@ -176,19 +192,8 @@ public:
     if (is_on_) return;
 
     is_on_ = true;
-    
-    // Play activation sound
-    SaberBase::TurnOn();
 
-    // Turn on LED strips (simple on/off, no PWM)
-    digitalWrite(LED_STRIP_1_PIN, HIGH);
-    digitalWrite(LED_STRIP_2_PIN, HIGH);
-    
-    // Move clutch right 5mm
-    digitalWrite(CLUTCH_PIN, HIGH);
-    
-    // Schedule clutch to return after 800ms
-    clutch_return_time_ = millis() + 800;
+    ignite_timer_ = millis() + 1000;
   }
   
   // Begin retraction sequence when spinning slows
