@@ -83,8 +83,8 @@ public:
       digitalWrite(LED_STRIP_2_PIN, HIGH);
     // Move clutch right 5mm
       digitalWrite(CLUTCH_PIN, HIGH);
-    // Schedule clutch to return after 600ms
-      clutch_return_time_ = millis() + 600;
+    // Schedule clutch to return after 500ms
+      clutch_return_time_ = millis() + 500;
     }
   
     // Check for servo return timing
@@ -98,8 +98,8 @@ public:
 
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 4500);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5000);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 4000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 4200);
       blade_tighten_time_ = 0;
       blade_tension_time_ = millis() + 200;
     }
