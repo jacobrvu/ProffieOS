@@ -92,8 +92,8 @@ public:
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
       blade_tighten_time_ = millis() + 200;
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1500);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 1600);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1700);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 1800);
     }
 
     // Check for blade tightening
