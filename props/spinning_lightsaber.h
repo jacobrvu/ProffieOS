@@ -33,7 +33,7 @@ public:
   
   // Thresholds for spin detection
   const float SPIN_THRESHOLD = 720.0f;  // Angular velocity threshold for activation (deg/s)
-  const float SLOW_THRESHOLD = 600.0f;  // Angular velocity threshold for slow spin (deg/s)
+  const float SLOW_THRESHOLD = 360.0f;  // Angular velocity threshold for slow spin (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
@@ -78,16 +78,13 @@ public:
     if (millis() > ignite_timer_ && ignite_timer_ > 0) {
       ignite_timer_ = 0;
       SaberBase::TurnOn();
-
     // Turn on LED strips (simple on/off, no PWM)
       digitalWrite(LED_STRIP_1_PIN, HIGH);
       digitalWrite(LED_STRIP_2_PIN, HIGH);
-    
     // Move clutch right 5mm
       digitalWrite(CLUTCH_PIN, HIGH);
-    
-    // Schedule clutch to return after 700ms
-      clutch_return_time_ = millis() + 700;
+    // Schedule clutch to return after 800ms
+      clutch_return_time_ = millis() + 800;
     }
   
     // Check for servo return timing
@@ -101,16 +98,16 @@ public:
 
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 7500);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 8000);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 4500);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5000);
       blade_tighten_time_ = 0;
       blade_tension_time_ = millis() + 200;
     }
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 4000);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 4300);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2100);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2300);
       blade_tension_time_ = 0;
     }
 
@@ -177,21 +174,16 @@ public:
   // Activate the lightsaber
   void ActivateSaber() {
     if (is_on_) return;
-
     is_on_ = true;
-
     ignite_timer_ = millis() + 1700;
   }
   
   // Begin retraction sequence when spinning slows
   void BeginRetraction() {
-    
     // failsafe off timing
     failsafe_off_ = millis() + 4000;
-	  
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
-    
     // Turn on both retraction motors at full power
     LSanalogWrite(RETRACTION_MOTOR_1_PIN, 21000);
     LSanalogWrite(RETRACTION_MOTOR_2_PIN, 22000);
@@ -200,18 +192,14 @@ public:
   // Deactivate the lightsaber
   void DeactivateSaber() {
     if (!is_on_) return;
-
     is_on_ = false;
-    
     // Turn off LED strips
     digitalWrite(LED_STRIP_1_PIN, LOW);
     digitalWrite(LED_STRIP_2_PIN, LOW);
-    
     // Turn off all motors
     LSanalogWrite(RETRACTION_MOTOR_1_PIN, 0);
     LSanalogWrite(RETRACTION_MOTOR_2_PIN, 0);
     digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
-    
     // Ensure servo is in left position
     digitalWrite(CLUTCH_PIN, LOW);
   }
