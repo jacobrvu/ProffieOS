@@ -83,15 +83,15 @@ public:
       digitalWrite(LED_STRIP_2_PIN, HIGH);
     // Move clutch right 5mm
       digitalWrite(CLUTCH_PIN, HIGH);
-    // Schedule clutch to return after 800ms
-      clutch_return_time_ = millis() + 800;
+    // Schedule clutch to return after 600ms
+      clutch_return_time_ = millis() + 600;
     }
   
     // Check for servo return timing
     if (millis() > clutch_return_time_ && clutch_return_time_ > 0) {
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
-      blade_tighten_time_ = millis() + 250;
+      blade_tighten_time_ = millis() + 200;
       LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1500);
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 1600);
     }
@@ -106,8 +106,8 @@ public:
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2100);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2300);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 3000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 3200);
       blade_tension_time_ = 0;
     }
 
@@ -185,8 +185,8 @@ public:
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 21000);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 22000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 22000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 23000);
   }
   
   // Deactivate the lightsaber
