@@ -106,8 +106,8 @@ public:
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2100);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2200);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1900);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2000);
       blade_tension_time_ = 0;
     }
 
