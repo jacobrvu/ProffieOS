@@ -92,14 +92,14 @@ public:
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
       blade_tighten_time_ = millis() + 200;
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 4000);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 4100);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 5000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5100);
     }
 
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 4200);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 4300);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 5200);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5300);
       blade_tighten_time_ = 0;
       blade_tension_time_ = millis() + 200;
     }
