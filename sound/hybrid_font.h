@@ -6,7 +6,7 @@ class FontConfigFile : public ConfigFile {
 public:
   void iterateVariables(VariableOP *op) override {
     CONFIG_VARIABLE2(humStart, 100);
-    CONFIG_VARIABLE2(volHum, 52);
+    CONFIG_VARIABLE2(volHum, 72);
     CONFIG_VARIABLE2(volEff, 16);
     CONFIG_VARIABLE2(ProffieOSHumDelay, -1.0f);
     CONFIG_VARIABLE2(ProffieOSSwingSpeedThreshold, 11250.0f);
