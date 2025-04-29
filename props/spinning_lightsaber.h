@@ -92,14 +92,14 @@ public:
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
       blade_tighten_time_ = millis() + 200;
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 5000);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5100);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 6100);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 6200);
     }
 
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 5200);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5300);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 5100);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5200);
       blade_tighten_time_ = 0;
       blade_tension_time_ = millis() + 200;
     }
@@ -140,7 +140,7 @@ public:
           ActivateSaber();
           spin_state_ = SPINNING;
 	  activation_buffer_ = millis() + 8000;
-	  spin_speed_buffer_ = millis() + 6500;
+	  spin_speed_buffer_ = millis() + 6000;
         }
         break;
         
@@ -185,8 +185,8 @@ public:
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 23000);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 24000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 24000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 25000);
   }
   
   // Deactivate the lightsaber
