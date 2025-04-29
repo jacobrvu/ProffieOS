@@ -83,8 +83,8 @@ public:
       digitalWrite(LED_STRIP_2_PIN, HIGH);
     // Move clutch right 5mm
       digitalWrite(CLUTCH_PIN, HIGH);
-    // Schedule clutch to return after 380ms
-      clutch_return_time_ = millis() + 380;
+    // Schedule clutch to return after 370ms
+      clutch_return_time_ = millis() + 370;
     }
   
     // Check for servo return timing
@@ -185,8 +185,8 @@ public:
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 26000);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 27000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 27000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 28000);
   }
   
   // Deactivate the lightsaber
