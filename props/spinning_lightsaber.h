@@ -101,7 +101,7 @@ public:
       LSanalogWrite(RETRACTION_MOTOR_1_PIN, 5100);
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5200);
       blade_tighten_time_ = 0;
-      blade_tension_time_ = millis() + 100;
+      blade_tension_time_ = millis() + 50;
     }
 	  
     // Check for blade tensioning
