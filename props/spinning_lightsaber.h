@@ -91,7 +91,7 @@ public:
     if (millis() > clutch_return_time_ && clutch_return_time_ > 0) {
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
-      blade_tighten_time_ = millis() + 200;
+      blade_tighten_time_ = millis() + 150;
       LSanalogWrite(RETRACTION_MOTOR_1_PIN, 6100);
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 6200);
     }
