@@ -175,7 +175,7 @@ public:
   void ActivateSaber() {
     if (is_on_) return;
     is_on_ = true;
-    ignite_timer_ = millis() + 1500;
+    ignite_timer_ = millis() + 200;
   }
   
   // Begin retraction sequence when spinning slows
