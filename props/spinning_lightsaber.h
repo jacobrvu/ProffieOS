@@ -44,6 +44,8 @@ public:
   uint32_t failsafe_off_ = 0;
   uint32_t spin_speed_buffer_ = 0;
   uint32_t ignite_timer_ = 0;
+  uint32_t cane_rotation_ = 0;
+  uint32_t cane_stop_ = 0;
 
   void Setup() override {
     PropBase::Setup();
@@ -127,6 +129,20 @@ public:
       // Ensure clutch is in left position
       digitalWrite(CLUTCH_PIN, LOW);
       failsafe_off_ = 0; // Reset timer
+      cane_rotation_ = millis() + 8000; // Reset cane
+    }
+
+    // Check for cane position
+    if (millis() > cane_rotation_ && cane_rotation_ > 0) {
+      digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
+      cane_rotation_ = 0;
+      cane_stop_ = millis() + 8000;
+    }
+
+    // Check for cane stop
+    if (millis() > cane_stop_ && cane_stop_ > 0) {
+      digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
+      cane_stop_ = 0;
     }
 
     if (millis() - last_check_time_ >= 300) { 
@@ -181,12 +197,12 @@ public:
   // Begin retraction sequence when spinning slows
   void BeginRetraction() {
     // failsafe off timing
-    failsafe_off_ = millis() + 6000;
+    failsafe_off_ = millis() + 5000;
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 27500);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 28000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 29000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 29500);
   }
   
   // Deactivate the lightsaber
