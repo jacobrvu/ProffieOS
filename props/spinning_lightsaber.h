@@ -175,13 +175,13 @@ public:
   void ActivateSaber() {
     if (is_on_) return;
     is_on_ = true;
-    ignite_timer_ = millis() + 200;
+    ignite_timer_ = millis() + 300;
   }
   
   // Begin retraction sequence when spinning slows
   void BeginRetraction() {
     // failsafe off timing
-    failsafe_off_ = millis() + 4000;
+    failsafe_off_ = millis() + 5000;
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
