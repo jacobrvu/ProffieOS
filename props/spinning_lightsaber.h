@@ -181,7 +181,7 @@ public:
   // Begin retraction sequence when spinning slows
   void BeginRetraction() {
     // failsafe off timing
-    failsafe_off_ = millis() + 5000;
+    failsafe_off_ = millis() + 6000;
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
