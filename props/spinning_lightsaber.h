@@ -140,7 +140,7 @@ public:
           ActivateSaber();
           spin_state_ = SPINNING;
 	  activation_buffer_ = millis() + 8000;
-	  spin_speed_buffer_ = millis() + 6000;
+	  spin_speed_buffer_ = millis() + 10000;
         }
         break;
         
@@ -149,7 +149,7 @@ public:
           // Spinning is slowing - start retraction
           BeginRetraction();
           spin_state_ = STOPPED;
-	  activation_buffer_ = millis() + 6000;
+	  activation_buffer_ = millis() + 8000;
         }
         break;
         
@@ -175,7 +175,7 @@ public:
   void ActivateSaber() {
     if (is_on_) return;
     is_on_ = true;
-    ignite_timer_ = millis() + 300;
+    ignite_timer_ = millis() + 500;
   }
   
   // Begin retraction sequence when spinning slows
@@ -185,7 +185,7 @@ public:
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 27000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 27500);
     LSanalogWrite(RETRACTION_MOTOR_2_PIN, 28000);
   }
   
