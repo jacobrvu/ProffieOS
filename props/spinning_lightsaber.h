@@ -44,8 +44,7 @@ public:
   uint32_t failsafe_off_ = 0;
   uint32_t spin_speed_buffer_ = 0;
   uint32_t ignite_timer_ = 0;
-  uint32_t cane_rotation_ = 0;
-  uint32_t cane_stop_ = 0;
+  uint32_t sound_off_ = 0;
 
   void Setup() override {
     PropBase::Setup();
@@ -85,8 +84,8 @@ public:
       digitalWrite(LED_STRIP_2_PIN, HIGH);
     // Move clutch right 5mm
       digitalWrite(CLUTCH_PIN, HIGH);
-    // Schedule clutch to return after 370ms
-      clutch_return_time_ = millis() + 370;
+    // Schedule clutch to return after 350ms
+      clutch_return_time_ = millis() + 350;
     }
   
     // Check for servo return timing
@@ -113,10 +112,14 @@ public:
       blade_tension_time_ = 0;
     }
 
+    if (sound_off_ > 0 && millis() > sound_off_) {
+      SaberBase::TurnOff(SaberBase::OFF_NORMAL);
+      sound_off_ = 0; // Reset timer
+    }
+
     // Failsafe off
     if (failsafe_off_ > 0 && millis() > failsafe_off_) {
       DeactivateSaber();
-      SaberBase::TurnOff(SaberBase::OFF_NORMAL);
 
       digitalWrite(LED_STRIP_1_PIN, LOW);
       digitalWrite(LED_STRIP_2_PIN, LOW);
@@ -129,21 +132,8 @@ public:
       // Ensure clutch is in left position
       digitalWrite(CLUTCH_PIN, LOW);
       failsafe_off_ = 0; // Reset timer
-      cane_rotation_ = millis() + 8000; // Reset cane
     }
 
-    // Check for cane position
-    if (millis() > cane_rotation_ && cane_rotation_ > 0) {
-      digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
-      cane_rotation_ = 0;
-      cane_stop_ = millis() + 8000;
-    }
-
-    // Check for cane stop
-    if (millis() > cane_stop_ && cane_stop_ > 0) {
-      digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
-      cane_stop_ = 0;
-    }
 
     if (millis() - last_check_time_ >= 300) { 
 	last_check_time_ = millis();
@@ -155,8 +145,8 @@ public:
           // Hilt is spinning fast enough - activate lightsaber
           ActivateSaber();
           spin_state_ = SPINNING;
-	  activation_buffer_ = millis() + 8000;
-	  spin_speed_buffer_ = millis() + 11000;
+	  activation_buffer_ = millis() + 12000;
+	  spin_speed_buffer_ = millis() + 12000;
         }
         break;
         
@@ -165,7 +155,7 @@ public:
           // Spinning is slowing - start retraction
           BeginRetraction();
           spin_state_ = STOPPED;
-	  activation_buffer_ = millis() + 8000;
+	  activation_buffer_ = millis() + 20000;
         }
         break;
         
@@ -191,18 +181,19 @@ public:
   void ActivateSaber() {
     if (is_on_) return;
     is_on_ = true;
-    ignite_timer_ = millis() + 3000;
+    ignite_timer_ = millis() + 8000;
   }
   
   // Begin retraction sequence when spinning slows
   void BeginRetraction() {
     // failsafe off timing
-    failsafe_off_ = millis() + 5000;
+    failsafe_off_ = millis() + 5500;
+    sound_off_ = millis() + 4500;
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 28500);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 29000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 32700);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 32700);
   }
   
   // Deactivate the lightsaber
