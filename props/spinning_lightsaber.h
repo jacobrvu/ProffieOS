@@ -32,8 +32,8 @@ public:
   static const int CLUTCH_PIN = bladePowerPin3;  // LED3 pin for clutch control
   
   // Thresholds for spin detection
-  const float SPIN_THRESHOLD = 520.0f;  // Angular velocity threshold for activation (deg/s)
-  const float SLOW_THRESHOLD = 320.0f;  // Angular velocity threshold for slow spin (deg/s)
+  const float SPIN_THRESHOLD = 700.0f;  // Angular velocity threshold for activation (deg/s)
+  const float SLOW_THRESHOLD = 350.0f;  // Angular velocity threshold for slow spin (deg/s)
   
   bool rotating_chassis_spin_on_ = false;
   uint32_t clutch_return_time_ = 0;
@@ -58,8 +58,10 @@ public:
     pinMode(CLUTCH_PIN, OUTPUT);
 
     // Turn everything off initially
-    digitalWrite(LED_STRIP_1_PIN, LOW);
-    digitalWrite(LED_STRIP_2_PIN, LOW);
+    LSanalogWriteSetup(LED_STRIP_1_PIN);
+    LSanalogWriteSetup(LED_STRIP_2_PIN);
+    analogWrite(LED_STRIP_1_PIN, 0);
+    analogWrite(LED_STRIP_2_PIN, 0);
     LSanalogWriteSetup(RETRACTION_MOTOR_1_PIN);
     LSanalogWriteSetup(RETRACTION_MOTOR_2_PIN);
     analogWrite(RETRACTION_MOTOR_1_PIN, 0);
@@ -80,8 +82,8 @@ public:
       ignite_timer_ = 0;
       SaberBase::TurnOn();
     // Turn on LED strips (simple on/off, no PWM)
-      digitalWrite(LED_STRIP_1_PIN, HIGH);
-      digitalWrite(LED_STRIP_2_PIN, HIGH);
+      LSanalogWrite(LED_STRIP_1_PIN, 24600);
+      LSanalogWrite(LED_STRIP_2_PIN, 24600);
     // Move clutch right 5mm
       digitalWrite(CLUTCH_PIN, HIGH);
     // Schedule clutch to return after 350ms
@@ -121,8 +123,8 @@ public:
     if (failsafe_off_ > 0 && millis() > failsafe_off_) {
       DeactivateSaber();
 
-      digitalWrite(LED_STRIP_1_PIN, LOW);
-      digitalWrite(LED_STRIP_2_PIN, LOW);
+      LSanalogWrite(LED_STRIP_1_PIN, 0);
+      LSanalogWrite(LED_STRIP_2_PIN, 0);
     
       // Turn off all motors
       LSanalogWrite(RETRACTION_MOTOR_1_PIN, 0);
@@ -201,8 +203,8 @@ public:
     if (!is_on_) return;
     is_on_ = false;
     // Turn off LED strips
-    digitalWrite(LED_STRIP_1_PIN, LOW);
-    digitalWrite(LED_STRIP_2_PIN, LOW);
+    LSanalogWrite(LED_STRIP_1_PIN, 0);
+    LSanalogWrite(LED_STRIP_2_PIN, 0);
     // Turn off all motors
     LSanalogWrite(RETRACTION_MOTOR_1_PIN, 0);
     LSanalogWrite(RETRACTION_MOTOR_2_PIN, 0);
