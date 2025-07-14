@@ -28,7 +28,7 @@ public:
   static const int LED_STRIP_2_PIN = bladePowerPin6;    // LED6 pin for LED strip 2
   static const int RETRACTION_MOTOR_1_PIN = bladePowerPin1; // LED1 pin for retraction motor 1
   static const int RETRACTION_MOTOR_2_PIN = bladePowerPin2; // LED2 pin for retraction motor 2
-  static const int CANE_ROTATION_MOTOR_PIN = bladePowerPin4; // LED4 pin for cane rotation motor
+  static const int CHASSIS_ROTATION_MOTOR_PIN = bladePowerPin4; // LED4 pin for chassis rotation motor
   static const int CLUTCH_PIN = bladePowerPin3;  // LED3 pin for clutch control
   
   // Thresholds for spin detection
@@ -54,7 +54,7 @@ public:
     pinMode(LED_STRIP_2_PIN, OUTPUT);
     pinMode(RETRACTION_MOTOR_1_PIN, OUTPUT);
     pinMode(RETRACTION_MOTOR_2_PIN, OUTPUT);
-    pinMode(CANE_ROTATION_MOTOR_PIN, OUTPUT);
+    pinMode(CHASSIS_ROTATION_MOTOR_PIN, OUTPUT);
     pinMode(CLUTCH_PIN, OUTPUT);
 
     // Turn everything off initially
@@ -64,7 +64,7 @@ public:
     LSanalogWriteSetup(RETRACTION_MOTOR_2_PIN);
     analogWrite(RETRACTION_MOTOR_1_PIN, 0);
     analogWrite(RETRACTION_MOTOR_2_PIN, 0);
-    digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
+    digitalWrite(CHASSIS_ROTATION_MOTOR_PIN, LOW);
     digitalWrite(CLUTCH_PIN, LOW);
 
   }
@@ -93,22 +93,22 @@ public:
       digitalWrite(CLUTCH_PIN, LOW); // Return to left position
       clutch_return_time_ = 0; // Reset timer
       blade_tighten_time_ = millis() + 150;
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 6100);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 6200);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 1000);
     }
 
     // Check for blade tightening
     if (millis() > blade_tighten_time_ && blade_tighten_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 5100);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 5200);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 1000);
       blade_tighten_time_ = 0;
       blade_tension_time_ = millis() + 50;
     }
 	  
     // Check for blade tensioning
     if (millis() > blade_tension_time_ && blade_tension_time_ > 0) {
-      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1550);
-      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 1600);
+      LSanalogWrite(RETRACTION_MOTOR_1_PIN, 1000);
+      LSanalogWrite(RETRACTION_MOTOR_2_PIN, 1000);
       blade_tension_time_ = 0;
     }
 
@@ -192,8 +192,8 @@ public:
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 32700);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 32700);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 16000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 16000);
   }
   
   // Deactivate the lightsaber
