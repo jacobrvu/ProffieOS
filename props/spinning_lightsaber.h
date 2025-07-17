@@ -194,8 +194,8 @@ public:
     // Turn on cane rotation motor
     digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
-    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 16000);
-    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 16000);
+    LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2000);
+    LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2000);
   }
   
   // Deactivate the lightsaber
