@@ -129,7 +129,7 @@ public:
       // Turn off all motors
       LSanalogWrite(RETRACTION_MOTOR_1_PIN, 0);
       LSanalogWrite(RETRACTION_MOTOR_2_PIN, 0);
-      digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
+      digitalWrite(CHASSIS_ROTATION_MOTOR_PIN, LOW);
     
       // Ensure clutch is in left position
       digitalWrite(CLUTCH_PIN, LOW);
@@ -192,7 +192,7 @@ public:
     failsafe_off_ = millis() + 5500;
     sound_off_ = millis() + 4500;
     // Turn on cane rotation motor
-    digitalWrite(CANE_ROTATION_MOTOR_PIN, HIGH);
+    digitalWrite(CHASSIS_ROTATION_MOTOR_PIN, HIGH);
     // Turn on both retraction motors at full power
     LSanalogWrite(RETRACTION_MOTOR_1_PIN, 2000);
     LSanalogWrite(RETRACTION_MOTOR_2_PIN, 2000);
@@ -208,7 +208,7 @@ public:
     // Turn off all motors
     LSanalogWrite(RETRACTION_MOTOR_1_PIN, 0);
     LSanalogWrite(RETRACTION_MOTOR_2_PIN, 0);
-    digitalWrite(CANE_ROTATION_MOTOR_PIN, LOW);
+    digitalWrite(CHASSIS_ROTATION_MOTOR_PIN, LOW);
     // Ensure servo is in left position
     digitalWrite(CLUTCH_PIN, LOW);
   }
